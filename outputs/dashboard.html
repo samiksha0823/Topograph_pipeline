@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TopoGraph — The Ontology Healer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/2.27.0/plotly.min.js"></script>
+<style>
+  :root{
+    --bg:#0D1117; --surface:#141B24; --surface-2:#1A2230; --border:#26303F;
+    --text:#E8ECF1; --text-muted:#8893A3; --text-dim:#5C6779;
+    --amber:#E8A33D; --teal:#4FD1C5; --violet:#9B8CFF; --red:#FF5C5C; --green:#6FCF97;
+    --font-display:'Space Grotesk',sans-serif; --font-body:'Inter',sans-serif; --font-mono:'JetBrains Mono',monospace;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:var(--font-body);}
+  ::selection{background:var(--amber);color:#0D1117;}
+  a{color:var(--teal);}
+
+  .topbar{
+    position:sticky;top:0;z-index:50;background:rgba(13,17,23,0.92);backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--border);padding:14px 24px;display:flex;align-items:center;
+    justify-content:space-between;flex-wrap:wrap;gap:12px;
+  }
+  .brand{display:flex;align-items:baseline;gap:10px;}
+  .brand .mark{font-family:var(--font-display);font-weight:700;font-size:20px;letter-spacing:0.02em;}
+  .brand .mark span{color:var(--amber);}
+  .brand .tag{font-family:var(--font-mono);font-size:11px;color:var(--text-dim);letter-spacing:0.08em;text-transform:uppercase;}
+
+  .tabs{display:flex;gap:4px;background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:4px;}
+  .tab-btn{
+    font-family:var(--font-mono);font-size:12.5px;color:var(--text-muted);background:transparent;border:none;
+    padding:8px 14px;border-radius:7px;cursor:pointer;transition:all .15s ease;white-space:nowrap;
+  }
+  .tab-btn:hover{color:var(--text);}
+  .tab-btn.active{background:var(--bg);color:var(--amber);box-shadow:0 0 0 1px var(--border) inset;}
+
+  .container{max-width:1180px;margin:0 auto;padding:32px 24px 80px;}
+  .section{display:none;}
+  .section.active{display:block;animation:fadein .35s ease;}
+  @keyframes fadein{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+
+  h1.page-title{font-family:var(--font-display);font-size:28px;font-weight:600;margin:0 0 6px;}
+  p.page-sub{color:var(--text-muted);font-size:14.5px;margin:0 0 28px;max-width:680px;line-height:1.55;}
+  .eyebrow{font-family:var(--font-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--amber);margin:0 0 8px;}
+
+  .stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:28px;}
+  .stat-tile{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px;}
+  .stat-tile .num{font-family:var(--font-mono);font-size:26px;font-weight:600;color:var(--text);}
+  .stat-tile .lbl{font-size:12px;color:var(--text-muted);margin-top:4px;line-height:1.3;}
+  .stat-tile.accent-amber .num{color:var(--amber);}
+  .stat-tile.accent-teal .num{color:var(--teal);}
+  .stat-tile.accent-violet .num{color:var(--violet);}
+  .stat-tile.accent-red .num{color:var(--red);}
+
+  .grid-2{display:grid;grid-template-columns:1.4fr 1fr;gap:20px;align-items:start;}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;}
+  .card h3{font-family:var(--font-display);font-size:15px;margin:0 0 12px;font-weight:600;}
+
+  .legend{display:flex;flex-wrap:wrap;gap:10px 16px;margin-top:14px;}
+  .legend-item{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--text-muted);}
+  .dot{width:9px;height:9px;border-radius:50%;display:inline-block;}
+
+  .proof-box{background:var(--surface-2);border:1px solid var(--amber);border-radius:10px;padding:16px 18px;margin-bottom:16px;}
+  .proof-box .eyebrow{margin-bottom:6px;}
+  .proof-box p{font-family:var(--font-mono);font-size:12.5px;line-height:1.65;color:var(--text);margin:0;}
+  .proof-equation{font-family:var(--font-mono);font-size:14px;color:var(--teal);margin:10px 0;letter-spacing:.02em;}
+
+  .slider-wrap{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 20px;margin-bottom:16px;}
+  .slider-labels{display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:11px;color:var(--text-dim);margin-bottom:6px;}
+  input[type=range]{width:100%;accent-color:var(--amber);}
+  .readout-row{display:flex;gap:18px;margin-top:14px;flex-wrap:wrap;}
+  .readout{font-family:var(--font-mono);font-size:13px;color:var(--text-muted);}
+  .readout b{color:var(--text);font-size:16px;display:block;}
+  .badge{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:11px;
+    padding:3px 9px;border-radius:20px;background:rgba(111,207,151,0.12);color:var(--green);border:1px solid rgba(111,207,151,0.35);}
+
+  .toggle-row{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+  .toggle{position:relative;width:42px;height:24px;background:var(--surface-2);border:1px solid var(--border);border-radius:14px;cursor:pointer;transition:background .2s;}
+  .toggle.on{background:rgba(255,92,92,0.25);border-color:var(--red);}
+  .toggle .knob{position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:var(--text-dim);transition:all .2s;}
+  .toggle.on .knob{left:22px;background:var(--red);}
+  .toggle-label{font-family:var(--font-mono);font-size:12.5px;color:var(--text-muted);}
+
+  .link-card{background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:13px 15px;margin-bottom:10px;}
+  .link-card .pair{font-family:var(--font-mono);font-size:13px;color:var(--red);margin-bottom:4px;}
+  .link-card .titles{font-size:12.5px;color:var(--text-muted);line-height:1.5;margin-bottom:8px;}
+  .link-card .stats{display:flex;gap:14px;flex-wrap:wrap;}
+  .link-card .stat{font-family:var(--font-mono);font-size:11px;color:var(--text-dim);}
+  .link-card .stat b{color:var(--teal);}
+  .unreachable-badge{font-family:var(--font-mono);font-size:10.5px;color:var(--red);background:rgba(255,92,92,0.1);
+    border:1px solid rgba(255,92,92,0.35);padding:2px 8px;border-radius:20px;}
+
+  .plot-box{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:6px;}
+
+  footer{text-align:center;padding:30px 0 50px;color:var(--text-dim);font-family:var(--font-mono);font-size:11.5px;}
+
+  @media (max-width: 860px){
+    .grid-2{grid-template-columns:1fr;}
+    .stat-row{grid-template-columns:repeat(2,1fr);}
+    .container{padding:24px 16px 60px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <div class="mark">TOPO<span>GRAPH</span></div>
+    <div class="tag">The Ontology Healer</div>
+  </div>
+  <div class="tabs" id="tabs">
+    <button class="tab-btn active" data-tab="overview">Overview</button>
+    <button class="tab-btn" data-tab="phase1">Phase 1 · Diagnose</button>
+    <button class="tab-btn" data-tab="phase2">Phase 2 · Heal</button>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- ===================== OVERVIEW ===================== -->
+  <section class="section active" id="sec-overview">
+    <p class="eyebrow">Knowledge Graph Analytics &amp; Discovery</p>
+    <h1 class="page-title">A Security Experiential Knowledge Graph, seen topologically</h1>
+    <p class="page-sub">41 offensive-security knowledge entries, cross-referenced by human curators into attack
+      chains. Standard graph analytics see only direct links. We applied Topological Data Analysis to see the
+      graph's <em>shape</em> — and found its curation gaps.</p>
+
+    <div class="stat-row" id="overview-stats"></div>
+
+    <div class="card">
+      <h3>Declared cross-reference network</h3>
+      <div class="plot-box"><div id="plot-overview-network" style="height:520px;"></div></div>
+      <div class="legend" id="overview-legend"></div>
+    </div>
+  </section>
+
+  <!-- ===================== PHASE 1 ===================== -->
+  <section class="section" id="sec-phase1">
+    <p class="eyebrow">Phase 1 — Diagnose</p>
+    <h1 class="page-title">Proving zero recursive attack loops</h1>
+    <p class="page-sub">We filter the curated graph by entry quality score and ask: at any validation
+      threshold, do recursive exploit loops (β₁) ever appear? Drag the slider — the answer is proven, not just
+      observed.</p>
+
+    <div class="proof-box">
+      <p class="eyebrow" style="margin-bottom:8px;">Formal proof</p>
+      <div class="proof-equation" id="phase1-equation"></div>
+      <p id="phase1-proof-text"></p>
+    </div>
+
+    <div class="grid-2">
+      <div>
+        <div class="slider-wrap">
+          <div class="slider-labels"><span>← STRICT VALIDATION</span><span>LENIENT VALIDATION →</span></div>
+          <input type="range" id="phase1-slider" min="0" max="59" value="59" step="1">
+          <div class="readout-row">
+            <div class="readout">ε (filtration)<b id="readout-eps">—</b></div>
+            <div class="readout">min quality required<b id="readout-quality">—</b></div>
+            <div class="readout">β₀ components<b id="readout-beta0">—</b></div>
+            <div class="readout">β₁ loops<b id="readout-beta1" style="color:var(--green)">0 <span class="badge">proven 0</span></b></div>
+          </div>
+        </div>
+        <div class="plot-box"><div id="plot-phase1-betti" style="height:280px;"></div></div>
+      </div>
+      <div class="card">
+        <h3>Network at current threshold</h3>
+        <div class="plot-box"><div id="plot-phase1-network" style="height:420px;"></div></div>
+        <p style="font-size:12px;color:var(--text-muted);margin-top:10px;">Bright edges are trusted at this
+          quality threshold; dim edges are excluded until validation is relaxed.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== PHASE 2 ===================== -->
+  <section class="section" id="sec-phase2">
+    <p class="eyebrow">Phase 2 — Heal</p>
+    <h1 class="page-title">Discovering what human curators missed</h1>
+    <p class="page-sub">A second, continuous metric space built from entry text (TF-IDF + cosine distance) finds
+      pairs of techniques that are semantically near-identical but were never cross-referenced — ranked by how
+      statistically unlikely that gap is.</p>
+
+    <div class="grid-2">
+      <div>
+        <div class="toggle-row">
+          <div class="toggle" id="heal-toggle"><div class="knob"></div></div>
+          <div class="toggle-label" id="heal-toggle-label">Show healed links — OFF</div>
+        </div>
+        <div class="card">
+          <h3>Network — before / after healing</h3>
+          <div class="plot-box"><div id="plot-phase2-network" style="height:440px;"></div></div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Top healed missing links</h3>
+        <div id="missing-links-list"></div>
+      </div>
+    </div>
+
+    <div class="grid-2" style="margin-top:20px;">
+      <div class="card">
+        <h3>Persistence diagram (semantic space)</h3>
+        <div class="plot-box"><div id="plot-phase2-diagram" style="height:340px;"></div></div>
+      </div>
+      <div class="card">
+        <h3>Persistence barcode</h3>
+        <div class="plot-box"><div id="plot-phase2-barcode" style="height:340px;"></div></div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer>TopoGraph — built by Samiksha, Tarunima, Harini &amp; Reza · Knowledge Graph Analytics &amp; Discovery</footer>
+
+<script>
+const DATA = {"category_colors":{"chain_pattern":"#E07A5F","signal_interpretation":"#3D405B","tactical_priority":"#81B29A","bypass_technique":"#F2CC8F","pitfall":"#9B5DE5"},"summary":{"n_entries":41,"n_declared_edges":14,"n_total_ref_edges":85,"n_isolated":17,"n_components":27,"avg_pass_count":0.469},"nodes":[{"id":"ek_0000","title":"curl Proxy-Authorization leak on proxy-to-direct redirect transition","category":"chain_pattern","pass_count":8,"confidence":"high","in_degree":0,"out_degree":0,"x":-0.0378990766404749,"y":1.0},{"id":"ek_0001","title":"Proxy-to-direct redirect as credential harvesting vector","category":"signal_interpretation","pass_count":8,"confidence":"medium","in_degree":0,"out_degree":0,"x":0.765963543892656,"y":0.45333241352435066},{"id":"ek_0002","title":"Tiered URL decode rejection flags leave CRLF gaps","category":"signal_interpretation","pass_count":7,"confidence":"high","in_degree":0,"out_degree":1,"x":-0.7808810155832618,"y":-0.3339808438657267},{"id":"ek_0003","title":"location.pathname double-slash protocol-relative URL hijack in AJAX","category":"bypass_technique","pass_count":8,"confidence":"high","in_degree":1,"out_degree":0,"x":-0.9137083893793977,"y":0.47210442617677856},{"id":"ek_0004","title":"location.pathname in URL construction signals AJAX request hijack potential","category":"signal_interpretation","pass_count":8,"confidence":"high","in_degree":0,"out_degree":0,"x":0.3365737912042433,"y":0.8528571379911659},{"id":"ek_0005","title":"CLI argument parsing as incidental CRLF defense layer in libcurl","category":"chain_pattern","pass_count":8,"confidence":"medium","in_degree":0,"out_degree":0,"x":-0.6294738709185544,"y":0.8663851008401642},{"id":"ek_0006","title":"Protocol injection testing requires library-level API access not CLI","category":"tactical_priority","pass_count":8,"confidence":"high","in_degree":0,"out_degree":0,"x":0.8575374002595817,"y":-0.26351723631123714},{"id":"ek_0007","title":"Self-XSS to stored XSS via write-capable IDOR","category":"chain_pattern","pass_count":7,"confidence":"high","in_degree":0,"out_degree":0,"x":-0.563894712992755,"y":-0.729636720703576},{"id":"ek_0008","title":"Partial IDOR fix signals remaining write-method IDOR","category":"signal_interpretation","pass_count":8,"confidence":"medium","in_degree":0,"out_degree":0,"x":-0.8167006900793315,"y":-0.07908205765143643},{"id":"ek_0009","title":"Prioritize deletion UI paths for XSS trigger discovery","category":"tactical_priority","pass_count":8,"confidence":"medium","in_degree":0,"out_degree":0,"x":0.4234175390511456,"y":-0.6575013911539148},{"id":"ek_0010","title":"Error/edge-case pages bypass input validation enforced on main flows","category":"signal_interpretation","pass_count":8,"confidence":"high","in_degree":0,"out_degree":0,"x":0.3256939728859275,"y":-0.8096995748114303},{"id":"ek_0011","title":"Redirect parameter to DOM XSS via form value population","category":"chain_pattern","pass_count":8,"confidence":"high","in_degree":0,"out_degree":0,"x":-0.6568430153986914,"y":-0.5524565071550295},{"id":"ek_0012","title":"Prioritize compound-state pages when testing shared parameters","category":"tactical_priority","pass_count":8,"confidence":"high","in_degree":0,"out_degree":1,"x":0.1236120804906828,"y":-0.00557232154663998},{"id":"ek_0013","title":"HTML blacklist bypass via deprecated and non-standard tags","category":"bypass_technique","pass_count":8,"confidence":"high","in_degree":0,"out_degree":1,"x":-0.36095169149252965,"y":-0.2488273555347263},{"id":"ek_0014","title":"Plaintext tag destroys page rendering making XSS injection obvious","category":"pitfall","pass_count":8,"confidence":"high","in_degree":2,"out_degree":0,"x":0.16744094523548642,"y":-0.8869310522615839},{"id":"ek_0015","title":"Stored profile XSS plus missing CSRF on profile edit enables self-propagating worm","category":"chain_pattern","pass_count":8,"confidence":"high","in_degree":0,"out_degree":0,"x":0.6482518099462468,"y":-0.5405392659105112},{"id":"ek_0016","title":"Encoder/decoder asymmetry as vulnerability signal in protocol implementations","category":"signal_interpretation","pass_count":8,"confidence":"high","in_degree":0,"out_degree":1,"x":-0.029394551186867453,"y":0.8851494212151276},{"id":"ek_0017","title":"Multiplier overflow to zero silently consumes input without affecting decoded length","category":"chain_pattern","pass_count":8,"confidence":"high","in_degree":1,"out_degree":0,"x":0.7808062991726399,"y":0.6220765382402628},{"id":"ek_0018","title":"Audit protocol spec mandatory limits as first pass in protocol parser review","category":"tactical_priority","pass_count":8,"confidence":"high","in_degree":0,"out_degree":1,"x":0.04842820414880715,"y":-0.5216498395867976},{"id":"ek_0019","title":"Server-side data fetch + content-type mismatch = reflected XSS via third-party profile","category":"chain_pattern","pass_count":8,"confidence":"high","in_degree":1,"out_degree":0,"x":0.8363722484994323,"y":-0.013510255892424385},{"id":"ek_0020","title":"Browser XSS auditor bypass via server-side fetched payloads","category":"bypass_technique","pass_count":8,"confidence":"high","in_degree":0,"out_degree":1,"x":-0.9171313053104678,"y":0.14515560099438668},{"id":"ek_0021","title":"Conditional macro write with unconditional pointer adjust pattern","category":"signal_interpretation","pass_count":8,"confidence":"high","in_degree":1,"out_degree":0,"x":-0.8167990585923132,"y":0.6707764419068644},{"id":"ek_0022","title":"Struct-adjacent field leak via intra-struct pointer underflow","category":"chain_pattern","pass_count":8,"confidence":"medium","in_degree":0,"out_degree":1,"x":-0.13389133951641788,"y":-0.16744661774146952},{"id":"ek_0023","title":"Inconsistent control character rejection across protocol handler parsing functions indicates injection surfaces","category":"signal_interpretation","pass_count":8,"confidence":"high","in_degree":0,"out_degree":1,"x":0.2319462399386199,"y":-0.4892670135571125},{"id":"ek_0024","title":"CRLF injection + missing pingpong overflow check enables protocol desynchronization with misattributed responses","category":"chain_pattern","pass_count":8,"confidence":"high","in_degree":2,"out_degree":0,"x":0.008234812390315,"y":-0.856299277074035},{"id":"ek_0025","title":"When auditing pingpong protocol handlers, diff the overflow/extra-data checks across all state handlers","category":"tactical_priority","pass_count":8,"confidence":"high","in_degree":0,"out_degree":1,"x":0.8807028242595414,"y":0.40905858712718335},{"id":"ek_0026","title":"Inconsistent format specifier usage as over-read signal","category":"signal_interpretation","pass_count":8,"confidence":"high","in_degree":1,"out_degree":0,"x":0.5554151657472486,"y":0.8562610008432255},{"id":"ek_0027","title":"Default-disabled protocol features as high-value audit targets","category":"tactical_priority","pass_count":8,"confidence":"high","in_degree":0,"out_degree":0,"x":0.19551728702125898,"y":0.9684378679955444},{"id":"ek_0028","title":"Server-initiated frame + non-null-terminated callback buffer = client over-read","category":"chain_pattern","pass_count":8,"confidence":"high","in_degree":0,"out_degree":1,"x":-0.8458852101201584,"y":-0.46234135583270336},{"id":"ek_0029","title":"Vendor-patched XSS regression via payload variant in CMS settings APIs","category":"chain_pattern","pass_count":7,"confidence":"medium","in_degree":0,"out_degree":1,"x":-0.9182092579458409,"y":-0.3073790986778394},{"id":"ek_0030","title":"Partial JSON body in PUT settings APIs accepts subset of fields","category":"bypass_technique","pass_count":8,"confidence":"medium","in_degree":2,"out_degree":0,"x":-0.3892416318152436,"y":-0.7591410659664217},{"id":"ek_0031","title":"First-visit-only parameters as hidden XSS attack surface","category":"tactical_priority","pass_count":8,"confidence":"medium","in_degree":0,"out_degree":1,"x":0.2602054063673529,"y":0.13569318033715796},{"id":"ek_0032","title":"Fragment-routed AJAX + unanchored regex domain check = CORS-based XSS","category":"chain_pattern","pass_count":8,"confidence":"high","in_degree":1,"out_degree":0,"x":-0.6364105424554631,"y":0.648633756123662},{"id":"ek_0033","title":"Satisfying unanchored domain regex via query parameter embedding","category":"bypass_technique","pass_count":8,"confidence":"high","in_degree":0,"out_degree":1,"x":0.11907857170967195,"y":0.18842481272601044},{"id":"ek_0034","title":"Fragment-based AJAX routing signals potential CORS-assisted content injection","category":"signal_interpretation","pass_count":8,"confidence":"medium","in_degree":0,"out_degree":1,"x":0.1880736517209148,"y":0.38938680359686895},{"id":"ek_0035","title":"XSS to RCE chain in Electron-based desktop apps via Node.js bridge","category":"chain_pattern","pass_count":8,"confidence":"high","in_degree":2,"out_degree":0,"x":0.770428277616393,"y":-0.4309232809312973},{"id":"ek_0036","title":"eval(prompt()) as interactive XSS debug console","category":"tactical_priority","pass_count":8,"confidence":"high","in_degree":0,"out_degree":0,"x":-0.9783876183018129,"y":0.27790191625545596},{"id":"ek_0037","title":"Unauthenticated multi-user contexts as XSS severity multipliers","category":"signal_interpretation","pass_count":8,"confidence":"high","in_degree":0,"out_degree":0,"x":0.6013780191470167,"y":0.7082198486894814},{"id":"ek_0038","title":"$.getScript as compact XSS payload stager bypassing quote filters","category":"bypass_technique","pass_count":8,"confidence":"high","in_degree":0,"out_degree":0,"x":0.5611453679531833,"y":-0.7220328047455945},{"id":"ek_0039","title":"Cross-parameter tag splitting to bypass per-parameter XSS filters","category":"bypass_technique","pass_count":8,"confidence":"high","in_degree":0,"out_degree":0,"x":-0.15767813769278646,"y":-0.8676382671379446},{"id":"ek_0040","title":"Inconsistent encoding across parameters signals separate code paths with different security controls","category":"signal_interpretation","pass_count":8,"confidence":"high","in_degree":0,"out_degree":0,"x":0.897157656764001,"y":0.15551834946576235}],"declared_edges":[{"source":"ek_0002","target":"ek_0003","quality_distance":0.125},{"source":"ek_0012","target":"ek_0014","quality_distance":0.0},{"source":"ek_0013","target":"ek_0014","quality_distance":0.0},{"source":"ek_0016","target":"ek_0017","quality_distance":0.0},{"source":"ek_0018","target":"ek_0019","quality_distance":0.0},{"source":"ek_0020","target":"ek_0021","quality_distance":0.0},{"source":"ek_0022","target":"ek_0024","quality_distance":0.0},{"source":"ek_0023","target":"ek_0024","quality_distance":0.0},{"source":"ek_0025","target":"ek_0026","quality_distance":0.0},{"source":"ek_0028","target":"ek_0030","quality_distance":0.0},{"source":"ek_0029","target":"ek_0030","quality_distance":0.125},{"source":"ek_0031","target":"ek_0032","quality_distance":0.0},{"source":"ek_0033","target":"ek_0035","quality_distance":0.0},{"source":"ek_0034","target":"ek_0035","quality_distance":0.0}],"phase1":{"proof":{"is_forest":true,"n_nodes":41,"n_edges":14,"n_components":27,"expected_edges_if_forest":14,"edges_match_forest_formula":true,"proof_statement":"The declared cross-reference graph satisfies n_edges = n_nodes - n_components (14 = 41 - 27), the exact identity that holds iff a graph is a forest. Any quality-filtered subgraph of this edge set is therefore also a forest, and any flag/Rips complex whose 1-skeleton is restricted to these edges has beta_1 = 0 at every filtration threshold - not by observation, but by construction."},"betti_curve":{"eps":[0.0,0.0169,0.0339,0.0508,0.0678,0.0847,0.1017,0.1186,0.1356,0.1525,0.1695,0.1864,0.2034,0.2203,0.2373,0.2542,0.2712,0.2881,0.3051,0.322,0.339,0.3559,0.3729,0.3898,0.4068,0.4237,0.4407,0.4576,0.4746,0.4915,0.5085,0.5254,0.5424,0.5593,0.5763,0.5932,0.6102,0.6271,0.6441,0.661,0.678,0.6949,0.7119,0.7288,0.7458,0.7627,0.7797,0.7966,0.8136,0.8305,0.8475,0.8644,0.8814,0.8983,0.9153,0.9322,0.9492,0.9661,0.9831,1.0],"beta0":[29,29,29,29,29,29,29,29,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27],"beta1":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]}},"phase2":{"persistence":{"0":[[0.0,null],[0.0,0.9379680936033001],[0.0,0.9068049956549245],[0.0,0.9021845399900783],[0.0,0.9010620007674409],[0.0,0.9001580376959915],[0.0,0.8977835038193508],[0.0,0.8931429264566969],[0.0,0.8917656952200862],[0.0,0.8906587996808085],[0.0,0.8862184028128932],[0.0,0.8859071120026343],[0.0,0.8846563774609116],[0.0,0.8842366028363823],[0.0,0.8805010052086835],[0.0,0.8771243395816117],[0.0,0.8730494016151982],[0.0,0.8685446751758771],[0.0,0.8644864195001877],[0.0,0.8586087928120885],[0.0,0.8535543018953214],[0.0,0.8480570001181534],[0.0,0.8468381697858406],[0.0,0.8438910497737107],[0.0,0.8434283669782803],[0.0,0.839048097651107],[0.0,0.8346647106751203],[0.0,0.8252898502877574],[0.0,0.8241783934972458],[0.0,0.8080816896461539],[0.0,0.7922579556188293],[0.0,0.7908704037794922],[0.0,0.7225828122191826],[0.0,0.708544401653748],[0.0,0.6977966467160188],[0.0,0.6886255544702993],[0.0,0.6736985861232218],[0.0,0.6723910852303802],[0.0,0.6586888904670523],[0.0,0.6421503304534213],[0.0,0.5921964533190456]],"1":[[0.8893351087683832,0.9269782775537985],[0.8987664501293487,0.9278449371457588],[0.9139543806631992,0.9426633292544453],[0.9115077216004196,0.9377075503039661],[0.9236786236623725,0.942628260462573],[0.9141053001541464,0.9314745625965465],[0.9108668435599315,0.9279893694045896],[0.9085084917540862,0.9253841462112994],[0.9038442542745144,0.9200611989648779],[0.9148468104992856,0.9289812127947946],[0.925695143368579,0.9391839809067115],[0.9317301832172125,0.9451118494723445],[0.9380183138829354,0.9510332557166699],[0.9108965204921009,0.9235645503017612],[0.9331946884010226,0.9458498744674035],[0.9119842384720226,0.9239109535218641],[0.9272891782651322,0.9377972152682806],[0.9313971630638038,0.9400650560701224],[0.8298509396476387,0.8379564334909397],[0.9455326056321536,0.9526379559637583],[0.9423888202698465,0.9490182717312664],[0.9143913423858386,0.9203518301598811],[0.9370459975294998,0.9421762195022485],[0.9385916005354606,0.9431415226106252],[0.9378393431012584,0.9421381335129422],[0.9216516366980603,0.9259305734666825],[0.9251922414344049,0.9287499783621342],[0.9262823639933813,0.9288868789134775],[0.911192552601266,0.913584451304622],[0.9069465715690168,0.9092610611003931],[0.9181858546863295,0.9200611989648779],[0.9382819354720253,0.9396181423947031],[0.9463830195341882,0.9472652949490344],[0.9558981880865292,0.9566845833054537],[0.9584711982508204,0.9592213347383558],[0.9117605785122594,0.9123711988009039],[0.9419935967192122,0.9421718561461193]],"2":[]},"betti_curve":{"eps":[0.0,0.0127,0.0253,0.038,0.0506,0.0633,0.0759,0.0886,0.1013,0.1139,0.1266,0.1392,0.1519,0.1646,0.1772,0.1899,0.2025,0.2152,0.2278,0.2405,0.2532,0.2658,0.2785,0.2911,0.3038,0.3165,0.3291,0.3418,0.3544,0.3671,0.3797,0.3924,0.4051,0.4177,0.4304,0.443,0.4557,0.4684,0.481,0.4937,0.5063,0.519,0.5316,0.5443,0.557,0.5696,0.5823,0.5949,0.6076,0.6203,0.6329,0.6456,0.6582,0.6709,0.6835,0.6962,0.7089,0.7215,0.7342,0.7468,0.7595,0.7722,0.7848,0.7975,0.8101,0.8228,0.8354,0.8481,0.8608,0.8734,0.8861,0.8987,0.9114,0.9241,0.9367,0.9494,0.962,0.9747,0.9873,1.0],"beta0":[41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,40,40,40,40,39,39,38,36,35,33,33,32,32,32,32,32,30,29,29,26,21,19,16,11,6,2,2,2,1,1,1,1,1],"beta1":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,7,10,8,2,0,0,0,0]},"link_stats":{"mean_distance":0.9542,"std_distance":0.0425,"n_total_pairs":820},"missing_links":[{"a":"ek_0032","b":"ek_0033","a_title":"Fragment-routed AJAX + unanchored regex domain check = CORS-based XSS","b_title":"Satisfying unanchored domain regex via query parameter embedding","distance":0.5922,"z_score":-8.52,"percentile_rank":0.0,"reachable_via_declared_chain":false},{"a":"ek_0000","b":"ek_0001","a_title":"curl Proxy-Authorization leak on proxy-to-direct redirect transition","b_title":"Proxy-to-direct redirect as credential harvesting vector","distance":0.6587,"z_score":-6.95,"percentile_rank":0.24,"reachable_via_declared_chain":false},{"a":"ek_0032","b":"ek_0034","a_title":"Fragment-routed AJAX + unanchored regex domain check = CORS-based XSS","b_title":"Fragment-based AJAX routing signals potential CORS-assisted content injection","distance":0.6724,"z_score":-6.63,"percentile_rank":0.37,"reachable_via_declared_chain":false},{"a":"ek_0024","b":"ek_0025","a_title":"CRLF injection + missing pingpong overflow check enables protocol desynchronization with misattributed responses","b_title":"When auditing pingpong protocol handlers, diff the overflow/extra-data checks across all state handlers","distance":0.6737,"z_score":-6.6,"percentile_rank":0.49,"reachable_via_declared_chain":false},{"a":"ek_0003","b":"ek_0032","a_title":"location.pathname double-slash protocol-relative URL hijack in AJAX","b_title":"Fragment-routed AJAX + unanchored regex domain check = CORS-based XSS","distance":0.6886,"z_score":-6.25,"percentile_rank":0.61,"reachable_via_declared_chain":false},{"a":"ek_0010","b":"ek_0012","a_title":"Error/edge-case pages bypass input validation enforced on main flows","b_title":"Prioritize compound-state pages when testing shared parameters","distance":0.6978,"z_score":-6.03,"percentile_rank":0.73,"reachable_via_declared_chain":false},{"a":"ek_0003","b":"ek_0004","a_title":"location.pathname double-slash protocol-relative URL hijack in AJAX","b_title":"location.pathname in URL construction signals AJAX request hijack potential","distance":0.7085,"z_score":-5.78,"percentile_rank":0.85,"reachable_via_declared_chain":false},{"a":"ek_0005","b":"ek_0006","a_title":"CLI argument parsing as incidental CRLF defense layer in libcurl","b_title":"Protocol injection testing requires library-level API access not CLI","distance":0.7226,"z_score":-5.45,"percentile_rank":0.98,"reachable_via_declared_chain":false}]}};
+</script>
+<script>
+/* dashboard_app.js — TopoGraph: The Ontology Healer
+   All numbers come from DATA (embedded, precomputed by export_dashboard_data.py).
+   Nothing here invents data — it only renders / filters / re-colors it. */
+
+const CATEGORY_COLORS = {
+  chain_pattern: '#E07A5F',
+  signal_interpretation: '#7C8AC2',
+  tactical_priority: '#81B29A',
+  bypass_technique: '#F2CC8F',
+  pitfall: '#B895F2'
+};
+const DIM_EDGE = '#3A4456';
+const TRUSTED_EDGE = '#E8A33D';
+const HEAL_RED = '#FF5C5C';
+
+const nodeById = {};
+DATA.nodes.forEach(n => nodeById[n.id] = n);
+
+const PLOT_IDS = [
+  'plot-overview-network', 'plot-phase1-network', 'plot-phase1-betti',
+  'plot-phase2-network', 'plot-phase2-diagram', 'plot-phase2-barcode'
+];
+
+function esc(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+const BASE_LAYOUT = {
+  paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)',
+  margin: { l: 10, r: 10, t: 10, b: 10 },
+  xaxis: { visible: false, range: [-1.35, 1.35] },
+  yaxis: { visible: false, range: [-1.35, 1.35] },
+  showlegend: false, hovermode: 'closest',
+  font: { family: 'Inter, sans-serif', color: '#E8ECF1' }
+};
+const PLOT_CONFIG = { displayModeBar: false, responsive: true };
+
+function nodeTrace(opts = {}) {
+  const nodes = DATA.nodes;
+  return {
+    type: 'scatter', mode: 'markers',
+    x: nodes.map(n => n.x), y: nodes.map(n => n.y),
+    text: nodes.map(n =>
+      `<b>${esc(n.id)}</b><br>${esc(n.title)}<br>category: ${esc(n.category)}` +
+      `<br>quality: ${n.pass_count}/8 &nbsp; degree: ${n.in_degree}/${n.out_degree}`
+    ),
+    hoverinfo: 'text',
+    marker: {
+      size: nodes.map(n => 11 + 3.5 * (n.in_degree + n.out_degree)),
+      color: nodes.map(n => CATEGORY_COLORS[n.category] || '#999'),
+      opacity: nodes.map(n => (n.in_degree + n.out_degree) === 0 ? 0.4 : 1.0),
+      line: { width: 1.2, color: '#0D1117' }
+    }
+  };
+}
+
+function edgeTraces(edges, colorFn, opacityFn, dash) {
+  return edges.map(e => {
+    const s = nodeById[e.source], t = nodeById[e.target];
+    if (!s || !t) return null;
+    return {
+      type: 'scatter', mode: 'lines',
+      x: [s.x, t.x], y: [s.y, t.y],
+      line: { color: colorFn ? colorFn(e) : '#5B6577', width: 1.8, dash: dash || 'solid' },
+      opacity: opacityFn ? opacityFn(e) : 0.85,
+      hoverinfo: 'skip', showlegend: false
+    };
+  }).filter(Boolean);
+}
+
+function buildLegend(containerId) {
+  const cats = [...new Set(DATA.nodes.map(n => n.category))];
+  document.getElementById(containerId).innerHTML = cats.map(c =>
+    `<div class="legend-item"><span class="dot" style="background:${CATEGORY_COLORS[c]}"></span>${c}</div>`
+  ).join('');
+}
+
+function resizeAllPlots() {
+  PLOT_IDS.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && el.data) Plotly.Plots.resize(el);
+  });
+}
+
+/* ===================== OVERVIEW ===================== */
+function initOverview() {
+  const s = DATA.summary;
+  const stats = [
+    { num: s.n_entries, lbl: 'knowledge entries (ek_0000–ek_0040)', accent: '' },
+    { num: `${s.n_declared_edges} / ${s.n_total_ref_edges}`, lbl: 'cross-reference edges fall inside our 41-node sample', accent: 'amber' },
+    { num: s.n_components, lbl: 'weakly-connected components', accent: 'teal' },
+    { num: '0', lbl: 'cycles in the declared graph — proven forest', accent: 'violet' }
+  ];
+  document.getElementById('overview-stats').innerHTML = stats.map(t =>
+    `<div class="stat-tile ${t.accent ? 'accent-' + t.accent : ''}">
+       <div class="num">${t.num}</div><div class="lbl">${t.lbl}</div>
+     </div>`
+  ).join('');
+
+  const data = [...edgeTraces(DATA.declared_edges, () => '#5B6577', () => 0.7), nodeTrace()];
+  Plotly.newPlot('plot-overview-network', data, BASE_LAYOUT, PLOT_CONFIG);
+  buildLegend('overview-legend');
+}
+
+/* ===================== PHASE 1 ===================== */
+let phase1Initialized = false;
+function initPhase1() {
+  const proof = DATA.phase1.proof;
+  document.getElementById('phase1-equation').textContent =
+    `n_edges = n_nodes − n_components   →   ${proof.n_edges} = ${proof.n_nodes} − ${proof.n_components}  ✓ forest`;
+  document.getElementById('phase1-proof-text').textContent = proof.proof_statement;
+
+  const curve = DATA.phase1.betti_curve;
+  const maxIdx = curve.eps.length - 1;
+  const slider = document.getElementById('phase1-slider');
+  slider.max = maxIdx;
+
+  // betti curve chart
+  const maxY = Math.max(...curve.beta0) + 2;
+  Plotly.newPlot('plot-phase1-betti', [
+    { x: curve.eps, y: curve.beta0, mode: 'lines', name: 'β₀', line: { color: '#4FD1C5', width: 2.5 } },
+    { x: curve.eps, y: curve.beta1, mode: 'lines', name: 'β₁', line: { color: '#9B8CFF', width: 2.5 } }
+  ], {
+    ...BASE_LAYOUT,
+    xaxis: { visible: true, title: 'ε (filtration / validation leniency)', gridcolor: '#26303F', color: '#8893A3', range: [0, 1] },
+    yaxis: { visible: true, title: 'Betti number', gridcolor: '#26303F', color: '#8893A3', range: [-0.5, maxY] },
+    showlegend: true, legend: { font: { color: '#E8ECF1' }, orientation: 'h', y: 1.15 },
+    shapes: [{ type: 'line', x0: curve.eps[maxIdx], x1: curve.eps[maxIdx], y0: 0, y1: maxY, line: { color: '#E8A33D', width: 1.5, dash: 'dot' } }],
+    margin: { l: 46, r: 10, t: 30, b: 40 }
+  }, PLOT_CONFIG);
+
+  function renderAtIndex(idx) {
+    const eps = curve.eps[idx], beta0 = curve.beta0[idx];
+    document.getElementById('readout-eps').textContent = eps.toFixed(3);
+    document.getElementById('readout-quality').textContent = (8 * (1 - eps)).toFixed(1) + ' / 8';
+    document.getElementById('readout-beta0').textContent = beta0;
+
+    const data = [
+      ...edgeTraces(
+        DATA.declared_edges,
+        e => e.quality_distance <= eps ? TRUSTED_EDGE : DIM_EDGE,
+        e => e.quality_distance <= eps ? 0.95 : 0.18
+      ),
+      nodeTrace()
+    ];
+    Plotly.react('plot-phase1-network', data, BASE_LAYOUT, PLOT_CONFIG);
+    Plotly.relayout('plot-phase1-betti', { 'shapes[0].x0': eps, 'shapes[0].x1': eps });
+  }
+
+  slider.addEventListener('input', () => renderAtIndex(+slider.value));
+  renderAtIndex(maxIdx);
+}
+
+/* ===================== PHASE 2 ===================== */
+let phase2Initialized = false;
+let healOn = false;
+
+function renderPhase2Network() {
+  const overlay = healOn ? DATA.phase2.missing_links.slice(0, 5).map(c => ({ source: c.a, target: c.b })) : [];
+  const data = [
+    ...edgeTraces(DATA.declared_edges, () => '#5B6577', () => 0.75),
+    ...edgeTraces(overlay, () => HEAL_RED, () => 0.95, 'dash'),
+    nodeTrace()
+  ];
+  Plotly.react('plot-phase2-network', data, BASE_LAYOUT, PLOT_CONFIG);
+}
+
+function renderMissingLinksList() {
+  const top5 = DATA.phase2.missing_links.slice(0, 5);
+  document.getElementById('missing-links-list').innerHTML = top5.map(c => `
+    <div class="link-card">
+      <div class="pair">${esc(c.a)} ↔ ${esc(c.b)}
+        ${!c.reachable_via_declared_chain ? '<span class="unreachable-badge">unreachable via any declared chain</span>' : ''}
+      </div>
+      <div class="titles">"${esc(c.a_title)}"<br>"${esc(c.b_title)}"</div>
+      <div class="stats">
+        <div class="stat">distance <b>${c.distance}</b></div>
+        <div class="stat">z-score <b>${c.z_score}</b></div>
+        <div class="stat">percentile <b>${c.percentile_rank}%</b></div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderPersistenceDiagram() {
+  const pers = DATA.phase2.persistence;
+  let maxDeath = 0;
+  ['0', '1'].forEach(d => (pers[d] || []).forEach(([b, death]) => { if (death !== null) maxDeath = Math.max(maxDeath, death); }));
+  const plotMax = maxDeath * 1.08;
+  const dimColor = { '0': '#4FD1C5', '1': '#FF8A65' };
+  const traces = ['0', '1'].map(d => {
+    const pts = (pers[d] || []);
+    return {
+      type: 'scatter', mode: 'markers', name: `H${d}`,
+      x: pts.map(p => p[0]),
+      y: pts.map(p => p[1] === null ? plotMax : p[1]),
+      marker: { color: dimColor[d], size: 7, opacity: 0.8, line: { color: '#0D1117', width: 0.5 } }
+    };
+  });
+  traces.push({
+    type: 'scatter', mode: 'lines', x: [0, plotMax], y: [0, plotMax],
+    line: { color: '#3A4456', dash: 'dash', width: 1 }, hoverinfo: 'skip', showlegend: false
+  });
+  Plotly.newPlot('plot-phase2-diagram', traces, {
+    ...BASE_LAYOUT,
+    xaxis: { visible: true, title: 'birth', gridcolor: '#26303F', color: '#8893A3' },
+    yaxis: { visible: true, title: 'death', gridcolor: '#26303F', color: '#8893A3' },
+    showlegend: true, legend: { font: { color: '#E8ECF1' } },
+    margin: { l: 46, r: 10, t: 20, b: 40 }
+  }, PLOT_CONFIG);
+}
+
+function renderBarcode() {
+  const pers = DATA.phase2.persistence;
+  let maxDeath = 0;
+  ['0', '1'].forEach(d => (pers[d] || []).forEach(([b, death]) => { if (death !== null) maxDeath = Math.max(maxDeath, death); }));
+  const plotMax = maxDeath * 1.05;
+  const dimColor = { '0': '#4FD1C5', '1': '#FF8A65' };
+
+  const rows = [];
+  ['0', '1'].forEach(d => {
+    const feats = (pers[d] || [])
+      .map(([b, death]) => ({ b, death: death === null ? plotMax : death }))
+      .sort((a, b2) => (b2.death - b2.b) - (a.death - a.b))
+      .slice(0, d === '0' ? 22 : 15);
+    feats.forEach(f => rows.push({ dim: d, ...f }));
+  });
+
+  Plotly.newPlot('plot-phase2-barcode', [{
+    type: 'bar', orientation: 'h',
+    base: rows.map(r => r.b),
+    x: rows.map(r => r.death - r.b),
+    y: rows.map((_, i) => i),
+    marker: { color: rows.map(r => dimColor[r.dim]) },
+    hoverinfo: 'skip'
+  }], {
+    ...BASE_LAYOUT,
+    xaxis: { visible: true, title: 'semantic distance', gridcolor: '#26303F', color: '#8893A3' },
+    yaxis: { visible: false },
+    margin: { l: 10, r: 10, t: 20, b: 40 }
+  }, PLOT_CONFIG);
+}
+
+function initPhase2() {
+  renderPhase2Network();
+  renderMissingLinksList();
+  renderPersistenceDiagram();
+  renderBarcode();
+
+  const toggle = document.getElementById('heal-toggle');
+  const label = document.getElementById('heal-toggle-label');
+  toggle.addEventListener('click', () => {
+    healOn = !healOn;
+    toggle.classList.toggle('on', healOn);
+    label.textContent = `Show healed links — ${healOn ? 'ON' : 'OFF'}`;
+    renderPhase2Network();
+  });
+}
+
+/* ===================== TAB SWITCHING ===================== */
+document.getElementById('tabs').addEventListener('click', e => {
+  const btn = e.target.closest('.tab-btn');
+  if (!btn) return;
+  const tab = btn.dataset.tab;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b === btn));
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById('sec-' + tab).classList.add('active');
+
+  if (tab === 'phase1' && !phase1Initialized) { initPhase1(); phase1Initialized = true; }
+  if (tab === 'phase2' && !phase2Initialized) { initPhase2(); phase2Initialized = true; }
+  requestAnimationFrame(resizeAllPlots);
+});
+
+window.addEventListener('resize', resizeAllPlots);
+initOverview();
+
+</script>
+</body>
+</html>

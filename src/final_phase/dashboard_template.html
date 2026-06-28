@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TopoGraph — The Ontology Healer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/2.27.0/plotly.min.js"></script>
+<style>
+  :root{
+    --bg:#0D1117; --surface:#141B24; --surface-2:#1A2230; --border:#26303F;
+    --text:#E8ECF1; --text-muted:#8893A3; --text-dim:#5C6779;
+    --amber:#E8A33D; --teal:#4FD1C5; --violet:#9B8CFF; --red:#FF5C5C; --green:#6FCF97;
+    --font-display:'Space Grotesk',sans-serif; --font-body:'Inter',sans-serif; --font-mono:'JetBrains Mono',monospace;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:var(--font-body);}
+  ::selection{background:var(--amber);color:#0D1117;}
+  a{color:var(--teal);}
+
+  .topbar{
+    position:sticky;top:0;z-index:50;background:rgba(13,17,23,0.92);backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--border);padding:14px 24px;display:flex;align-items:center;
+    justify-content:space-between;flex-wrap:wrap;gap:12px;
+  }
+  .brand{display:flex;align-items:baseline;gap:10px;}
+  .brand .mark{font-family:var(--font-display);font-weight:700;font-size:20px;letter-spacing:0.02em;}
+  .brand .mark span{color:var(--amber);}
+  .brand .tag{font-family:var(--font-mono);font-size:11px;color:var(--text-dim);letter-spacing:0.08em;text-transform:uppercase;}
+
+  .tabs{display:flex;gap:4px;background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:4px;}
+  .tab-btn{
+    font-family:var(--font-mono);font-size:12.5px;color:var(--text-muted);background:transparent;border:none;
+    padding:8px 14px;border-radius:7px;cursor:pointer;transition:all .15s ease;white-space:nowrap;
+  }
+  .tab-btn:hover{color:var(--text);}
+  .tab-btn.active{background:var(--bg);color:var(--amber);box-shadow:0 0 0 1px var(--border) inset;}
+
+  .container{max-width:1180px;margin:0 auto;padding:32px 24px 80px;}
+  .section{display:none;}
+  .section.active{display:block;animation:fadein .35s ease;}
+  @keyframes fadein{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+
+  h1.page-title{font-family:var(--font-display);font-size:28px;font-weight:600;margin:0 0 6px;}
+  p.page-sub{color:var(--text-muted);font-size:14.5px;margin:0 0 28px;max-width:680px;line-height:1.55;}
+  .eyebrow{font-family:var(--font-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--amber);margin:0 0 8px;}
+
+  .stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:28px;}
+  .stat-tile{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px;}
+  .stat-tile .num{font-family:var(--font-mono);font-size:26px;font-weight:600;color:var(--text);}
+  .stat-tile .lbl{font-size:12px;color:var(--text-muted);margin-top:4px;line-height:1.3;}
+  .stat-tile.accent-amber .num{color:var(--amber);}
+  .stat-tile.accent-teal .num{color:var(--teal);}
+  .stat-tile.accent-violet .num{color:var(--violet);}
+  .stat-tile.accent-red .num{color:var(--red);}
+
+  .grid-2{display:grid;grid-template-columns:1.4fr 1fr;gap:20px;align-items:start;}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;}
+  .card h3{font-family:var(--font-display);font-size:15px;margin:0 0 12px;font-weight:600;}
+
+  .legend{display:flex;flex-wrap:wrap;gap:10px 16px;margin-top:14px;}
+  .legend-item{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--text-muted);}
+  .dot{width:9px;height:9px;border-radius:50%;display:inline-block;}
+
+  .proof-box{background:var(--surface-2);border:1px solid var(--amber);border-radius:10px;padding:16px 18px;margin-bottom:16px;}
+  .proof-box .eyebrow{margin-bottom:6px;}
+  .proof-box p{font-family:var(--font-mono);font-size:12.5px;line-height:1.65;color:var(--text);margin:0;}
+  .proof-equation{font-family:var(--font-mono);font-size:14px;color:var(--teal);margin:10px 0;letter-spacing:.02em;}
+
+  .slider-wrap{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 20px;margin-bottom:16px;}
+  .slider-labels{display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:11px;color:var(--text-dim);margin-bottom:6px;}
+  input[type=range]{width:100%;accent-color:var(--amber);}
+  .readout-row{display:flex;gap:18px;margin-top:14px;flex-wrap:wrap;}
+  .readout{font-family:var(--font-mono);font-size:13px;color:var(--text-muted);}
+  .readout b{color:var(--text);font-size:16px;display:block;}
+  .badge{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:11px;
+    padding:3px 9px;border-radius:20px;background:rgba(111,207,151,0.12);color:var(--green);border:1px solid rgba(111,207,151,0.35);}
+
+  .toggle-row{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+  .toggle{position:relative;width:42px;height:24px;background:var(--surface-2);border:1px solid var(--border);border-radius:14px;cursor:pointer;transition:background .2s;}
+  .toggle.on{background:rgba(255,92,92,0.25);border-color:var(--red);}
+  .toggle .knob{position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:var(--text-dim);transition:all .2s;}
+  .toggle.on .knob{left:22px;background:var(--red);}
+  .toggle-label{font-family:var(--font-mono);font-size:12.5px;color:var(--text-muted);}
+
+  .link-card{background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:13px 15px;margin-bottom:10px;}
+  .link-card .pair{font-family:var(--font-mono);font-size:13px;color:var(--red);margin-bottom:4px;}
+  .link-card .titles{font-size:12.5px;color:var(--text-muted);line-height:1.5;margin-bottom:8px;}
+  .link-card .stats{display:flex;gap:14px;flex-wrap:wrap;}
+  .link-card .stat{font-family:var(--font-mono);font-size:11px;color:var(--text-dim);}
+  .link-card .stat b{color:var(--teal);}
+  .unreachable-badge{font-family:var(--font-mono);font-size:10.5px;color:var(--red);background:rgba(255,92,92,0.1);
+    border:1px solid rgba(255,92,92,0.35);padding:2px 8px;border-radius:20px;}
+
+  .plot-box{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:6px;}
+
+  footer{text-align:center;padding:30px 0 50px;color:var(--text-dim);font-family:var(--font-mono);font-size:11.5px;}
+
+  @media (max-width: 860px){
+    .grid-2{grid-template-columns:1fr;}
+    .stat-row{grid-template-columns:repeat(2,1fr);}
+    .container{padding:24px 16px 60px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <div class="mark">TOPO<span>GRAPH</span></div>
+    <div class="tag">The Ontology Healer</div>
+  </div>
+  <div class="tabs" id="tabs">
+    <button class="tab-btn active" data-tab="overview">Overview</button>
+    <button class="tab-btn" data-tab="phase1">Phase 1 · Diagnose</button>
+    <button class="tab-btn" data-tab="phase2">Phase 2 · Heal</button>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- ===================== OVERVIEW ===================== -->
+  <section class="section active" id="sec-overview">
+    <p class="eyebrow">Knowledge Graph Analytics &amp; Discovery</p>
+    <h1 class="page-title">A Security Experiential Knowledge Graph, seen topologically</h1>
+    <p class="page-sub">41 offensive-security knowledge entries, cross-referenced by human curators into attack
+      chains. Standard graph analytics see only direct links. We applied Topological Data Analysis to see the
+      graph's <em>shape</em> — and found its curation gaps.</p>
+
+    <div class="stat-row" id="overview-stats"></div>
+
+    <div class="card">
+      <h3>Declared cross-reference network</h3>
+      <div class="plot-box"><div id="plot-overview-network" style="height:520px;"></div></div>
+      <div class="legend" id="overview-legend"></div>
+    </div>
+  </section>
+
+  <!-- ===================== PHASE 1 ===================== -->
+  <section class="section" id="sec-phase1">
+    <p class="eyebrow">Phase 1 — Diagnose</p>
+    <h1 class="page-title">Proving zero recursive attack loops</h1>
+    <p class="page-sub">We filter the curated graph by entry quality score and ask: at any validation
+      threshold, do recursive exploit loops (β₁) ever appear? Drag the slider — the answer is proven, not just
+      observed.</p>
+
+    <div class="proof-box">
+      <p class="eyebrow" style="margin-bottom:8px;">Formal proof</p>
+      <div class="proof-equation" id="phase1-equation"></div>
+      <p id="phase1-proof-text"></p>
+    </div>
+
+    <div class="grid-2">
+      <div>
+        <div class="slider-wrap">
+          <div class="slider-labels"><span>← STRICT VALIDATION</span><span>LENIENT VALIDATION →</span></div>
+          <input type="range" id="phase1-slider" min="0" max="59" value="59" step="1">
+          <div class="readout-row">
+            <div class="readout">ε (filtration)<b id="readout-eps">—</b></div>
+            <div class="readout">min quality required<b id="readout-quality">—</b></div>
+            <div class="readout">β₀ components<b id="readout-beta0">—</b></div>
+            <div class="readout">β₁ loops<b id="readout-beta1" style="color:var(--green)">0 <span class="badge">proven 0</span></b></div>
+          </div>
+        </div>
+        <div class="plot-box"><div id="plot-phase1-betti" style="height:280px;"></div></div>
+      </div>
+      <div class="card">
+        <h3>Network at current threshold</h3>
+        <div class="plot-box"><div id="plot-phase1-network" style="height:420px;"></div></div>
+        <p style="font-size:12px;color:var(--text-muted);margin-top:10px;">Bright edges are trusted at this
+          quality threshold; dim edges are excluded until validation is relaxed.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== PHASE 2 ===================== -->
+  <section class="section" id="sec-phase2">
+    <p class="eyebrow">Phase 2 — Heal</p>
+    <h1 class="page-title">Discovering what human curators missed</h1>
+    <p class="page-sub">A second, continuous metric space built from entry text (TF-IDF + cosine distance) finds
+      pairs of techniques that are semantically near-identical but were never cross-referenced — ranked by how
+      statistically unlikely that gap is.</p>
+
+    <div class="grid-2">
+      <div>
+        <div class="toggle-row">
+          <div class="toggle" id="heal-toggle"><div class="knob"></div></div>
+          <div class="toggle-label" id="heal-toggle-label">Show healed links — OFF</div>
+        </div>
+        <div class="card">
+          <h3>Network — before / after healing</h3>
+          <div class="plot-box"><div id="plot-phase2-network" style="height:440px;"></div></div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Top healed missing links</h3>
+        <div id="missing-links-list"></div>
+      </div>
+    </div>
+
+    <div class="grid-2" style="margin-top:20px;">
+      <div class="card">
+        <h3>Persistence diagram (semantic space)</h3>
+        <div class="plot-box"><div id="plot-phase2-diagram" style="height:340px;"></div></div>
+      </div>
+      <div class="card">
+        <h3>Persistence barcode</h3>
+        <div class="plot-box"><div id="plot-phase2-barcode" style="height:340px;"></div></div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer>TopoGraph — built by Samiksha, Tarunima, Harini &amp; Reza · Knowledge Graph Analytics &amp; Discovery</footer>
+
+<script>
+const DATA = /*__DASHBOARD_DATA__*/;
+</script>
+<script src="dashboard_app.js"></script>
+</body>
+</html>

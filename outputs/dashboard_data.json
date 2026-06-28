@@ -1,0 +1,1397 @@
+{
+  "category_colors": {
+    "chain_pattern": "#E07A5F",
+    "signal_interpretation": "#3D405B",
+    "tactical_priority": "#81B29A",
+    "bypass_technique": "#F2CC8F",
+    "pitfall": "#9B5DE5"
+  },
+  "summary": {
+    "n_entries": 41,
+    "n_declared_edges": 14,
+    "n_total_ref_edges": 85,
+    "n_isolated": 17,
+    "n_components": 27,
+    "avg_pass_count": 0.469
+  },
+  "nodes": [
+    {
+      "id": "ek_0000",
+      "title": "curl Proxy-Authorization leak on proxy-to-direct redirect transition",
+      "category": "chain_pattern",
+      "pass_count": 8,
+      "confidence": "high",
+      "in_degree": 0,
+      "out_degree": 0,
+      "x": -0.0378990766404749,
+      "y": 1.0
+    },
+    {
+      "id": "ek_0001",
+      "title": "Proxy-to-direct redirect as credential harvesting vector",
+      "category": "signal_interpretation",
+      "pass_count": 8,
+      "confidence": "medium",
+      "in_degree": 0,
+      "out_degree": 0,
+      "x": 0.765963543892656,
+      "y": 0.45333241352435066
+    },
+    {
+      "id": "ek_0002",
+      "title": "Tiered URL decode rejection flags leave CRLF gaps",
+      "category": "signal_interpretation",
+      "pass_count": 7,
+      "confidence": "high",
+      "in_degree": 0,
+      "out_degree": 1,
+      "x": -0.7808810155832618,
+      "y": -0.3339808438657267
+    },
+    {
+      "id": "ek_0003",
+      "title": "location.pathname double-slash protocol-relative URL hijack in AJAX",
+      "category": "bypass_technique",
+      "pass_count": 8,
+      "confidence": "high",
+      "in_degree": 1,
+      "out_degree": 0,
+      "x": -0.9137083893793977,
+      "y": 0.47210442617677856
+    },
+    {
+      "id": "ek_0004",
+      "title": "location.pathname in URL construction signals AJAX request hijack potential",
+      "category": "signal_interpretation",
+      "pass_count": 8,
+      "confidence": "high",
+      "in_degree": 0,
+      "out_degree": 0,
+      "x": 0.3365737912042433,
+      "y": 0.8528571379911659
+    },
+    {
+      "id": "ek_0005",
+      "title": "CLI argument parsing as incidental CRLF defense layer in libcurl",
+      "category": "chain_pattern",
+      "pass_count": 8,
+      "confidence": "medium",
+      "in_degree": 0,
+      "out_degree": 0,
+      "x": -0.6294738709185544,
+      "y": 0.8663851008401642
+    },
+    {
+      "id": "ek_0006",
+      "title": "Protocol injection testing requires library-level API access not CLI",
+      "category": "tactical_priority",
+      "pass_count": 8,
+      "confidence": "high",
+      "in_degree": 0,
+      "out_degree": 0,
+      "x": 0.8575374002595817,
+      "y": -0.26351723631123714
+    },
+    {
+      "id": "ek_0007",
+      "title": "Self-XSS to stored XSS via write-capable IDOR",
+      "category": "chain_pattern",
+      "pass_count": 7,
+      "confidence": "high",
+      "in_degree": 0,
+      "out_degree": 0,
+      "x": -0.563894712992755,
+      "y": -0.729636720703576
+    },
+    {
+      "id": "ek_0008",
+      "title": "Partial IDOR fix signals remaining write-method IDOR",
+      "category": "signal_interpretation",
+      "pass_count": 8,
+      "confidence": "medium",
+      "in_degree": 0,
+      "out_degree": 0,
+      "x": -0.8167006900793315,
+      "y": -0.07908205765143643
+    },
+    {
+      "id": "ek_0009",
+      "title": "Prioritize deletion UI paths for XSS trigger discovery",
+      "category": "tactical_priority",
+      "pass_count": 8,
+      "confidence": "medium",
+      "in_degree": 0,
+      "out_degree": 0,
+      "x": 0.4234175390511456,
+      "y": -0.6575013911539148
+    },
+    {
+      "id": "ek_0010",
+      "title": "Error/edge-case pages bypass input validation enforced on main flows",
+      "category": "signal_interpretation",
+      "pass_count": 8,
+      "confidence": "high",
+      "in_degree": 0,
+      "out_degree": 0,
+      "x": 0.3256939728859275,
+      "y": -0.8096995748114303
+    },
+    {
+      "id": "ek_0011",
+      "title": "Redirect parameter to DOM XSS via form value population",
+      "category": "chain_pattern",
+      "pass_count": 8,
+      "confidence": "high",
+      "in_degree": 0,
+      "out_degree": 0,
+      "x": -0.6568430153986914,
+      "y": -0.5524565071550295
+    },
+    {
+      "id": "ek_0012",
+      "title": "Prioritize compound-state pages when testing shared parameters",
+      "category": "tactical_priority",
+      "pass_count": 8,
+      "confidence": "high",
+      "in_degree": 0,
+      "out_degree": 1,
+      "x": 0.1236120804906828,
+      "y": -0.00557232154663998
+    },
+    {
+      "id": "ek_0013",
+      "title": "HTML blacklist bypass via deprecated and non-standard tags",
+      "category": "bypass_technique",
+      "pass_count": 8,
+      "confidence": "high",
+      "in_degree": 0,
+      "out_degree": 1,
+      "x": -0.36095169149252965,
+      "y": -0.2488273555347263
+    },
+    {
+      "id": "ek_0014",
+      "title": "Plaintext tag destroys page rendering making XSS injection obvious",
+      "category": "pitfall",
+      "pass_count": 8,
+      "confidence": "high",
+      "in_degree": 2,
+      "out_degree": 0,
+      "x": 0.16744094523548642,
+      "y": -0.8869310522615839
+    },
+    {
+      "id": "ek_0015",
+      "title": "Stored profile XSS plus missing CSRF on profile edit enables self-propagating worm",
+      "category": "chain_pattern",
+      "pass_count": 8,
+      "confidence": "high",
+      "in_degree": 0,
+      "out_degree": 0,
+      "x": 0.6482518099462468,
+      "y": -0.5405392659105112
+    },
+    {
+      "id": "ek_0016",
+      "title": "Encoder/decoder asymmetry as vulnerability signal in protocol implementations",
+      "category": "signal_interpretation",
+      "pass_count": 8,
+      "confidence": "high",
+      "in_degree": 0,
+      "out_degree": 1,
+      "x": -0.029394551186867453,
+      "y": 0.8851494212151276
+    },
+    {
+      "id": "ek_0017",
+      "title": "Multiplier overflow to zero silently consumes input without affecting decoded length",
+      "category": "chain_pattern",
+      "pass_count": 8,
+      "confidence": "high",
+      "in_degree": 1,
+      "out_degree": 0,
+      "x": 0.7808062991726399,
+      "y": 0.6220765382402628
+    },
+    {
+      "id": "ek_0018",
+      "title": "Audit protocol spec mandatory limits as first pass in protocol parser review",
+      "category": "tactical_priority",
+      "pass_count": 8,
+      "confidence": "high",
+      "in_degree": 0,
+      "out_degree": 1,
+      "x": 0.04842820414880715,
+      "y": -0.5216498395867976
+    },
+    {
+      "id": "ek_0019",
+      "title": "Server-side data fetch + content-type mismatch = reflected XSS via third-party profile",
+      "category": "chain_pattern",
+      "pass_count": 8,
+      "confidence": "high",
+      "in_degree": 1,
+      "out_degree": 0,
+      "x": 0.8363722484994323,
+      "y": -0.013510255892424385
+    },
+    {
+      "id": "ek_0020",
+      "title": "Browser XSS auditor bypass via server-side fetched payloads",
+      "category": "bypass_technique",
+      "pass_count": 8,
+      "confidence": "high",
+      "in_degree": 0,
+      "out_degree": 1,
+      "x": -0.9171313053104678,
+      "y": 0.14515560099438668
+    },
+    {
+      "id": "ek_0021",
+      "title": "Conditional macro write with unconditional pointer adjust pattern",
+      "category": "signal_interpretation",
+      "pass_count": 8,
+      "confidence": "high",
+      "in_degree": 1,
+      "out_degree": 0,
+      "x": -0.8167990585923132,
+      "y": 0.6707764419068644
+    },
+    {
+      "id": "ek_0022",
+      "title": "Struct-adjacent field leak via intra-struct pointer underflow",
+      "category": "chain_pattern",
+      "pass_count": 8,
+      "confidence": "medium",
+      "in_degree": 0,
+      "out_degree": 1,
+      "x": -0.13389133951641788,
+      "y": -0.16744661774146952
+    },
+    {
+      "id": "ek_0023",
+      "title": "Inconsistent control character rejection across protocol handler parsing functions indicates injection surfaces",
+      "category": "signal_interpretation",
+      "pass_count": 8,
+      "confidence": "high",
+      "in_degree": 0,
+      "out_degree": 1,
+      "x": 0.2319462399386199,
+      "y": -0.4892670135571125
+    },
+    {
+      "id": "ek_0024",
+      "title": "CRLF injection + missing pingpong overflow check enables protocol desynchronization with misattributed responses",
+      "category": "chain_pattern",
+      "pass_count": 8,
+      "confidence": "high",
+      "in_degree": 2,
+      "out_degree": 0,
+      "x": 0.008234812390315,
+      "y": -0.856299277074035
+    },
+    {
+      "id": "ek_0025",
+      "title": "When auditing pingpong protocol handlers, diff the overflow/extra-data checks across all state handlers",
+      "category": "tactical_priority",
+      "pass_count": 8,
+      "confidence": "high",
+      "in_degree": 0,
+      "out_degree": 1,
+      "x": 0.8807028242595414,
+      "y": 0.40905858712718335
+    },
+    {
+      "id": "ek_0026",
+      "title": "Inconsistent format specifier usage as over-read signal",
+      "category": "signal_interpretation",
+      "pass_count": 8,
+      "confidence": "high",
+      "in_degree": 1,
+      "out_degree": 0,
+      "x": 0.5554151657472486,
+      "y": 0.8562610008432255
+    },
+    {
+      "id": "ek_0027",
+      "title": "Default-disabled protocol features as high-value audit targets",
+      "category": "tactical_priority",
+      "pass_count": 8,
+      "confidence": "high",
+      "in_degree": 0,
+      "out_degree": 0,
+      "x": 0.19551728702125898,
+      "y": 0.9684378679955444
+    },
+    {
+      "id": "ek_0028",
+      "title": "Server-initiated frame + non-null-terminated callback buffer = client over-read",
+      "category": "chain_pattern",
+      "pass_count": 8,
+      "confidence": "high",
+      "in_degree": 0,
+      "out_degree": 1,
+      "x": -0.8458852101201584,
+      "y": -0.46234135583270336
+    },
+    {
+      "id": "ek_0029",
+      "title": "Vendor-patched XSS regression via payload variant in CMS settings APIs",
+      "category": "chain_pattern",
+      "pass_count": 7,
+      "confidence": "medium",
+      "in_degree": 0,
+      "out_degree": 1,
+      "x": -0.9182092579458409,
+      "y": -0.3073790986778394
+    },
+    {
+      "id": "ek_0030",
+      "title": "Partial JSON body in PUT settings APIs accepts subset of fields",
+      "category": "bypass_technique",
+      "pass_count": 8,
+      "confidence": "medium",
+      "in_degree": 2,
+      "out_degree": 0,
+      "x": -0.3892416318152436,
+      "y": -0.7591410659664217
+    },
+    {
+      "id": "ek_0031",
+      "title": "First-visit-only parameters as hidden XSS attack surface",
+      "category": "tactical_priority",
+      "pass_count": 8,
+      "confidence": "medium",
+      "in_degree": 0,
+      "out_degree": 1,
+      "x": 0.2602054063673529,
+      "y": 0.13569318033715796
+    },
+    {
+      "id": "ek_0032",
+      "title": "Fragment-routed AJAX + unanchored regex domain check = CORS-based XSS",
+      "category": "chain_pattern",
+      "pass_count": 8,
+      "confidence": "high",
+      "in_degree": 1,
+      "out_degree": 0,
+      "x": -0.6364105424554631,
+      "y": 0.648633756123662
+    },
+    {
+      "id": "ek_0033",
+      "title": "Satisfying unanchored domain regex via query parameter embedding",
+      "category": "bypass_technique",
+      "pass_count": 8,
+      "confidence": "high",
+      "in_degree": 0,
+      "out_degree": 1,
+      "x": 0.11907857170967195,
+      "y": 0.18842481272601044
+    },
+    {
+      "id": "ek_0034",
+      "title": "Fragment-based AJAX routing signals potential CORS-assisted content injection",
+      "category": "signal_interpretation",
+      "pass_count": 8,
+      "confidence": "medium",
+      "in_degree": 0,
+      "out_degree": 1,
+      "x": 0.1880736517209148,
+      "y": 0.38938680359686895
+    },
+    {
+      "id": "ek_0035",
+      "title": "XSS to RCE chain in Electron-based desktop apps via Node.js bridge",
+      "category": "chain_pattern",
+      "pass_count": 8,
+      "confidence": "high",
+      "in_degree": 2,
+      "out_degree": 0,
+      "x": 0.770428277616393,
+      "y": -0.4309232809312973
+    },
+    {
+      "id": "ek_0036",
+      "title": "eval(prompt()) as interactive XSS debug console",
+      "category": "tactical_priority",
+      "pass_count": 8,
+      "confidence": "high",
+      "in_degree": 0,
+      "out_degree": 0,
+      "x": -0.9783876183018129,
+      "y": 0.27790191625545596
+    },
+    {
+      "id": "ek_0037",
+      "title": "Unauthenticated multi-user contexts as XSS severity multipliers",
+      "category": "signal_interpretation",
+      "pass_count": 8,
+      "confidence": "high",
+      "in_degree": 0,
+      "out_degree": 0,
+      "x": 0.6013780191470167,
+      "y": 0.7082198486894814
+    },
+    {
+      "id": "ek_0038",
+      "title": "$.getScript as compact XSS payload stager bypassing quote filters",
+      "category": "bypass_technique",
+      "pass_count": 8,
+      "confidence": "high",
+      "in_degree": 0,
+      "out_degree": 0,
+      "x": 0.5611453679531833,
+      "y": -0.7220328047455945
+    },
+    {
+      "id": "ek_0039",
+      "title": "Cross-parameter tag splitting to bypass per-parameter XSS filters",
+      "category": "bypass_technique",
+      "pass_count": 8,
+      "confidence": "high",
+      "in_degree": 0,
+      "out_degree": 0,
+      "x": -0.15767813769278646,
+      "y": -0.8676382671379446
+    },
+    {
+      "id": "ek_0040",
+      "title": "Inconsistent encoding across parameters signals separate code paths with different security controls",
+      "category": "signal_interpretation",
+      "pass_count": 8,
+      "confidence": "high",
+      "in_degree": 0,
+      "out_degree": 0,
+      "x": 0.897157656764001,
+      "y": 0.15551834946576235
+    }
+  ],
+  "declared_edges": [
+    {
+      "source": "ek_0002",
+      "target": "ek_0003",
+      "quality_distance": 0.125
+    },
+    {
+      "source": "ek_0012",
+      "target": "ek_0014",
+      "quality_distance": 0.0
+    },
+    {
+      "source": "ek_0013",
+      "target": "ek_0014",
+      "quality_distance": 0.0
+    },
+    {
+      "source": "ek_0016",
+      "target": "ek_0017",
+      "quality_distance": 0.0
+    },
+    {
+      "source": "ek_0018",
+      "target": "ek_0019",
+      "quality_distance": 0.0
+    },
+    {
+      "source": "ek_0020",
+      "target": "ek_0021",
+      "quality_distance": 0.0
+    },
+    {
+      "source": "ek_0022",
+      "target": "ek_0024",
+      "quality_distance": 0.0
+    },
+    {
+      "source": "ek_0023",
+      "target": "ek_0024",
+      "quality_distance": 0.0
+    },
+    {
+      "source": "ek_0025",
+      "target": "ek_0026",
+      "quality_distance": 0.0
+    },
+    {
+      "source": "ek_0028",
+      "target": "ek_0030",
+      "quality_distance": 0.0
+    },
+    {
+      "source": "ek_0029",
+      "target": "ek_0030",
+      "quality_distance": 0.125
+    },
+    {
+      "source": "ek_0031",
+      "target": "ek_0032",
+      "quality_distance": 0.0
+    },
+    {
+      "source": "ek_0033",
+      "target": "ek_0035",
+      "quality_distance": 0.0
+    },
+    {
+      "source": "ek_0034",
+      "target": "ek_0035",
+      "quality_distance": 0.0
+    }
+  ],
+  "phase1": {
+    "proof": {
+      "is_forest": true,
+      "n_nodes": 41,
+      "n_edges": 14,
+      "n_components": 27,
+      "expected_edges_if_forest": 14,
+      "edges_match_forest_formula": true,
+      "proof_statement": "The declared cross-reference graph satisfies n_edges = n_nodes - n_components (14 = 41 - 27), the exact identity that holds iff a graph is a forest. Any quality-filtered subgraph of this edge set is therefore also a forest, and any flag/Rips complex whose 1-skeleton is restricted to these edges has beta_1 = 0 at every filtration threshold - not by observation, but by construction."
+    },
+    "betti_curve": {
+      "eps": [
+        0.0,
+        0.0169,
+        0.0339,
+        0.0508,
+        0.0678,
+        0.0847,
+        0.1017,
+        0.1186,
+        0.1356,
+        0.1525,
+        0.1695,
+        0.1864,
+        0.2034,
+        0.2203,
+        0.2373,
+        0.2542,
+        0.2712,
+        0.2881,
+        0.3051,
+        0.322,
+        0.339,
+        0.3559,
+        0.3729,
+        0.3898,
+        0.4068,
+        0.4237,
+        0.4407,
+        0.4576,
+        0.4746,
+        0.4915,
+        0.5085,
+        0.5254,
+        0.5424,
+        0.5593,
+        0.5763,
+        0.5932,
+        0.6102,
+        0.6271,
+        0.6441,
+        0.661,
+        0.678,
+        0.6949,
+        0.7119,
+        0.7288,
+        0.7458,
+        0.7627,
+        0.7797,
+        0.7966,
+        0.8136,
+        0.8305,
+        0.8475,
+        0.8644,
+        0.8814,
+        0.8983,
+        0.9153,
+        0.9322,
+        0.9492,
+        0.9661,
+        0.9831,
+        1.0
+      ],
+      "beta0": [
+        29,
+        29,
+        29,
+        29,
+        29,
+        29,
+        29,
+        29,
+        27,
+        27,
+        27,
+        27,
+        27,
+        27,
+        27,
+        27,
+        27,
+        27,
+        27,
+        27,
+        27,
+        27,
+        27,
+        27,
+        27,
+        27,
+        27,
+        27,
+        27,
+        27,
+        27,
+        27,
+        27,
+        27,
+        27,
+        27,
+        27,
+        27,
+        27,
+        27,
+        27,
+        27,
+        27,
+        27,
+        27,
+        27,
+        27,
+        27,
+        27,
+        27,
+        27,
+        27,
+        27,
+        27,
+        27,
+        27,
+        27,
+        27,
+        27,
+        27
+      ],
+      "beta1": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  "phase2": {
+    "persistence": {
+      "0": [
+        [
+          0.0,
+          null
+        ],
+        [
+          0.0,
+          0.9379680936033001
+        ],
+        [
+          0.0,
+          0.9068049956549245
+        ],
+        [
+          0.0,
+          0.9021845399900783
+        ],
+        [
+          0.0,
+          0.9010620007674409
+        ],
+        [
+          0.0,
+          0.9001580376959915
+        ],
+        [
+          0.0,
+          0.8977835038193508
+        ],
+        [
+          0.0,
+          0.8931429264566969
+        ],
+        [
+          0.0,
+          0.8917656952200862
+        ],
+        [
+          0.0,
+          0.8906587996808085
+        ],
+        [
+          0.0,
+          0.8862184028128932
+        ],
+        [
+          0.0,
+          0.8859071120026343
+        ],
+        [
+          0.0,
+          0.8846563774609116
+        ],
+        [
+          0.0,
+          0.8842366028363823
+        ],
+        [
+          0.0,
+          0.8805010052086835
+        ],
+        [
+          0.0,
+          0.8771243395816117
+        ],
+        [
+          0.0,
+          0.8730494016151982
+        ],
+        [
+          0.0,
+          0.8685446751758771
+        ],
+        [
+          0.0,
+          0.8644864195001877
+        ],
+        [
+          0.0,
+          0.8586087928120885
+        ],
+        [
+          0.0,
+          0.8535543018953214
+        ],
+        [
+          0.0,
+          0.8480570001181534
+        ],
+        [
+          0.0,
+          0.8468381697858406
+        ],
+        [
+          0.0,
+          0.8438910497737107
+        ],
+        [
+          0.0,
+          0.8434283669782803
+        ],
+        [
+          0.0,
+          0.839048097651107
+        ],
+        [
+          0.0,
+          0.8346647106751203
+        ],
+        [
+          0.0,
+          0.8252898502877574
+        ],
+        [
+          0.0,
+          0.8241783934972458
+        ],
+        [
+          0.0,
+          0.8080816896461539
+        ],
+        [
+          0.0,
+          0.7922579556188293
+        ],
+        [
+          0.0,
+          0.7908704037794922
+        ],
+        [
+          0.0,
+          0.7225828122191826
+        ],
+        [
+          0.0,
+          0.708544401653748
+        ],
+        [
+          0.0,
+          0.6977966467160188
+        ],
+        [
+          0.0,
+          0.6886255544702993
+        ],
+        [
+          0.0,
+          0.6736985861232218
+        ],
+        [
+          0.0,
+          0.6723910852303802
+        ],
+        [
+          0.0,
+          0.6586888904670523
+        ],
+        [
+          0.0,
+          0.6421503304534213
+        ],
+        [
+          0.0,
+          0.5921964533190456
+        ]
+      ],
+      "1": [
+        [
+          0.8893351087683832,
+          0.9269782775537985
+        ],
+        [
+          0.8987664501293487,
+          0.9278449371457588
+        ],
+        [
+          0.9139543806631992,
+          0.9426633292544453
+        ],
+        [
+          0.9115077216004196,
+          0.9377075503039661
+        ],
+        [
+          0.9236786236623725,
+          0.942628260462573
+        ],
+        [
+          0.9141053001541464,
+          0.9314745625965465
+        ],
+        [
+          0.9108668435599315,
+          0.9279893694045896
+        ],
+        [
+          0.9085084917540862,
+          0.9253841462112994
+        ],
+        [
+          0.9038442542745144,
+          0.9200611989648779
+        ],
+        [
+          0.9148468104992856,
+          0.9289812127947946
+        ],
+        [
+          0.925695143368579,
+          0.9391839809067115
+        ],
+        [
+          0.9317301832172125,
+          0.9451118494723445
+        ],
+        [
+          0.9380183138829354,
+          0.9510332557166699
+        ],
+        [
+          0.9108965204921009,
+          0.9235645503017612
+        ],
+        [
+          0.9331946884010226,
+          0.9458498744674035
+        ],
+        [
+          0.9119842384720226,
+          0.9239109535218641
+        ],
+        [
+          0.9272891782651322,
+          0.9377972152682806
+        ],
+        [
+          0.9313971630638038,
+          0.9400650560701224
+        ],
+        [
+          0.8298509396476387,
+          0.8379564334909397
+        ],
+        [
+          0.9455326056321536,
+          0.9526379559637583
+        ],
+        [
+          0.9423888202698465,
+          0.9490182717312664
+        ],
+        [
+          0.9143913423858386,
+          0.9203518301598811
+        ],
+        [
+          0.9370459975294998,
+          0.9421762195022485
+        ],
+        [
+          0.9385916005354606,
+          0.9431415226106252
+        ],
+        [
+          0.9378393431012584,
+          0.9421381335129422
+        ],
+        [
+          0.9216516366980603,
+          0.9259305734666825
+        ],
+        [
+          0.9251922414344049,
+          0.9287499783621342
+        ],
+        [
+          0.9262823639933813,
+          0.9288868789134775
+        ],
+        [
+          0.911192552601266,
+          0.913584451304622
+        ],
+        [
+          0.9069465715690168,
+          0.9092610611003931
+        ],
+        [
+          0.9181858546863295,
+          0.9200611989648779
+        ],
+        [
+          0.9382819354720253,
+          0.9396181423947031
+        ],
+        [
+          0.9463830195341882,
+          0.9472652949490344
+        ],
+        [
+          0.9558981880865292,
+          0.9566845833054537
+        ],
+        [
+          0.9584711982508204,
+          0.9592213347383558
+        ],
+        [
+          0.9117605785122594,
+          0.9123711988009039
+        ],
+        [
+          0.9419935967192122,
+          0.9421718561461193
+        ]
+      ],
+      "2": []
+    },
+    "betti_curve": {
+      "eps": [
+        0.0,
+        0.0127,
+        0.0253,
+        0.038,
+        0.0506,
+        0.0633,
+        0.0759,
+        0.0886,
+        0.1013,
+        0.1139,
+        0.1266,
+        0.1392,
+        0.1519,
+        0.1646,
+        0.1772,
+        0.1899,
+        0.2025,
+        0.2152,
+        0.2278,
+        0.2405,
+        0.2532,
+        0.2658,
+        0.2785,
+        0.2911,
+        0.3038,
+        0.3165,
+        0.3291,
+        0.3418,
+        0.3544,
+        0.3671,
+        0.3797,
+        0.3924,
+        0.4051,
+        0.4177,
+        0.4304,
+        0.443,
+        0.4557,
+        0.4684,
+        0.481,
+        0.4937,
+        0.5063,
+        0.519,
+        0.5316,
+        0.5443,
+        0.557,
+        0.5696,
+        0.5823,
+        0.5949,
+        0.6076,
+        0.6203,
+        0.6329,
+        0.6456,
+        0.6582,
+        0.6709,
+        0.6835,
+        0.6962,
+        0.7089,
+        0.7215,
+        0.7342,
+        0.7468,
+        0.7595,
+        0.7722,
+        0.7848,
+        0.7975,
+        0.8101,
+        0.8228,
+        0.8354,
+        0.8481,
+        0.8608,
+        0.8734,
+        0.8861,
+        0.8987,
+        0.9114,
+        0.9241,
+        0.9367,
+        0.9494,
+        0.962,
+        0.9747,
+        0.9873,
+        1.0
+      ],
+      "beta0": [
+        41,
+        41,
+        41,
+        41,
+        41,
+        41,
+        41,
+        41,
+        41,
+        41,
+        41,
+        41,
+        41,
+        41,
+        41,
+        41,
+        41,
+        41,
+        41,
+        41,
+        41,
+        41,
+        41,
+        41,
+        41,
+        41,
+        41,
+        41,
+        41,
+        41,
+        41,
+        41,
+        41,
+        41,
+        41,
+        41,
+        41,
+        41,
+        41,
+        41,
+        41,
+        41,
+        41,
+        41,
+        41,
+        41,
+        41,
+        40,
+        40,
+        40,
+        40,
+        39,
+        39,
+        38,
+        36,
+        35,
+        33,
+        33,
+        32,
+        32,
+        32,
+        32,
+        32,
+        30,
+        29,
+        29,
+        26,
+        21,
+        19,
+        16,
+        11,
+        6,
+        2,
+        2,
+        2,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "beta1": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        7,
+        10,
+        8,
+        2,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "link_stats": {
+      "mean_distance": 0.9542,
+      "std_distance": 0.0425,
+      "n_total_pairs": 820
+    },
+    "missing_links": [
+      {
+        "a": "ek_0032",
+        "b": "ek_0033",
+        "a_title": "Fragment-routed AJAX + unanchored regex domain check = CORS-based XSS",
+        "b_title": "Satisfying unanchored domain regex via query parameter embedding",
+        "distance": 0.5922,
+        "z_score": -8.52,
+        "percentile_rank": 0.0,
+        "reachable_via_declared_chain": false
+      },
+      {
+        "a": "ek_0000",
+        "b": "ek_0001",
+        "a_title": "curl Proxy-Authorization leak on proxy-to-direct redirect transition",
+        "b_title": "Proxy-to-direct redirect as credential harvesting vector",
+        "distance": 0.6587,
+        "z_score": -6.95,
+        "percentile_rank": 0.24,
+        "reachable_via_declared_chain": false
+      },
+      {
+        "a": "ek_0032",
+        "b": "ek_0034",
+        "a_title": "Fragment-routed AJAX + unanchored regex domain check = CORS-based XSS",
+        "b_title": "Fragment-based AJAX routing signals potential CORS-assisted content injection",
+        "distance": 0.6724,
+        "z_score": -6.63,
+        "percentile_rank": 0.37,
+        "reachable_via_declared_chain": false
+      },
+      {
+        "a": "ek_0024",
+        "b": "ek_0025",
+        "a_title": "CRLF injection + missing pingpong overflow check enables protocol desynchronization with misattributed responses",
+        "b_title": "When auditing pingpong protocol handlers, diff the overflow/extra-data checks across all state handlers",
+        "distance": 0.6737,
+        "z_score": -6.6,
+        "percentile_rank": 0.49,
+        "reachable_via_declared_chain": false
+      },
+      {
+        "a": "ek_0003",
+        "b": "ek_0032",
+        "a_title": "location.pathname double-slash protocol-relative URL hijack in AJAX",
+        "b_title": "Fragment-routed AJAX + unanchored regex domain check = CORS-based XSS",
+        "distance": 0.6886,
+        "z_score": -6.25,
+        "percentile_rank": 0.61,
+        "reachable_via_declared_chain": false
+      },
+      {
+        "a": "ek_0010",
+        "b": "ek_0012",
+        "a_title": "Error/edge-case pages bypass input validation enforced on main flows",
+        "b_title": "Prioritize compound-state pages when testing shared parameters",
+        "distance": 0.6978,
+        "z_score": -6.03,
+        "percentile_rank": 0.73,
+        "reachable_via_declared_chain": false
+      },
+      {
+        "a": "ek_0003",
+        "b": "ek_0004",
+        "a_title": "location.pathname double-slash protocol-relative URL hijack in AJAX",
+        "b_title": "location.pathname in URL construction signals AJAX request hijack potential",
+        "distance": 0.7085,
+        "z_score": -5.78,
+        "percentile_rank": 0.85,
+        "reachable_via_declared_chain": false
+      },
+      {
+        "a": "ek_0005",
+        "b": "ek_0006",
+        "a_title": "CLI argument parsing as incidental CRLF defense layer in libcurl",
+        "b_title": "Protocol injection testing requires library-level API access not CLI",
+        "distance": 0.7226,
+        "z_score": -5.45,
+        "percentile_rank": 0.98,
+        "reachable_via_declared_chain": false
+      }
+    ]
+  }
+}

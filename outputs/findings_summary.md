@@ -35,16 +35,16 @@
 
 ## 2. PHASE 2 - Heal: Semantic TDA & Missing Link Discovery
 
-Since beta_1 cannot exist in a graph built only from declared (forest) edges, healing requires a continuous metric space independent of those edges. We built one from entry text (TF-IDF + cosine distance) and used the Rips filtration's own merge order - the literal order in which entries would topologically connect - to find missing links, rather than an arbitrary distance cutoff. Background: mean pairwise distance = 0.9543, std = 0.0425, n_pairs = 820.
+Since beta_1 cannot exist in a graph built only from declared (forest) edges, healing requires a continuous metric space independent of those edges. We built one from entry text (TF-IDF + cosine distance) and used the Rips filtration's own merge order - the literal order in which entries would topologically connect - to find missing links, rather than an arbitrary distance cutoff. Background: mean pairwise distance = 0.9542, std = 0.0425, n_pairs = 820.
 
 ### Top 5 healed missing links (statistically defensible)
 - **ek_0032 <-> ek_0033** (distance=0.5922, z=-8.52, percentile=0.0%, NOT reachable via any declared chain)
     "Fragment-routed AJAX + unanchored regex domain check = " <-> "Satisfying unanchored domain regex via query parameter "
-- **ek_0000 <-> ek_0001** (distance=0.656, z=-7.02, percentile=0.24%, NOT reachable via any declared chain)
+- **ek_0000 <-> ek_0001** (distance=0.6587, z=-6.95, percentile=0.24%, NOT reachable via any declared chain)
     "curl Proxy-Authorization leak on proxy-to-direct redire" <-> "Proxy-to-direct redirect as credential harvesting vecto"
 - **ek_0032 <-> ek_0034** (distance=0.6724, z=-6.63, percentile=0.37%, NOT reachable via any declared chain)
     "Fragment-routed AJAX + unanchored regex domain check = " <-> "Fragment-based AJAX routing signals potential CORS-assi"
-- **ek_0024 <-> ek_0025** (distance=0.6767, z=-6.53, percentile=0.49%, NOT reachable via any declared chain)
+- **ek_0024 <-> ek_0025** (distance=0.6737, z=-6.6, percentile=0.49%, NOT reachable via any declared chain)
     "CRLF injection + missing pingpong overflow check enable" <-> "When auditing pingpong protocol handlers, diff the over"
 - **ek_0003 <-> ek_0032** (distance=0.6886, z=-6.25, percentile=0.61%, NOT reachable via any declared chain)
     "location.pathname double-slash protocol-relative URL hi" <-> "Fragment-routed AJAX + unanchored regex domain check = "
