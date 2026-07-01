@@ -58,8 +58,7 @@ python3 build_dashboard.py          # bake it into outputs/dashboard.html
 
 `outputs/dashboard.html` is fully self-contained (data + JS inlined) except
 for two CDN links (Google Fonts, Plotly.js) — so it needs internet access
-once, in the browser, when opened. If the venue wifi is unreliable, test it
-beforehand on that network.
+once, in the browser, when opened. 
 
 Three tabs:
 - **Overview** — stat tiles + the declared cross-reference network, colored by category
