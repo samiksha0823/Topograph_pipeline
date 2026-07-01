@@ -55,16 +55,16 @@ python3 main.py
 (Also runs fine in Google Colab — same `pip install` line works there.)
 
 ## Outputs (`outputs/`)
-| File | Owner mapping | Description |
+| File |  Description |
 |---|---|---|
-| `01_network_graph.png` | — | Declared cross-reference graph, by category |
-| `02_centrality.png` | — | Top entries by in/out-degree |
-| `03_category_distribution.png` | — | Category counts |
-| `06_phase1_quality_fragmentation.png` | Tarunima | β₀/β₁ vs. quality threshold — proves β₁=0 |
-| `04_persistence_diagram.png` | Harini | H₀/H₁ scatter diagram, semantic space |
-| `07_persistence_barcode.png` | Harini | Classic barcode view of the same |
-| `08_before_after_healing.png` | Harini | "Before/After" — missing links drawn in red |
-| `findings_summary.md` | Reza | Full write-up, paste straight into the script/slides |
+| `01_network_graph.png` | Declared cross-reference graph, by category |
+| `02_centrality.png` | Top entries by in/out-degree |
+| `03_category_distribution.png` | Category counts |
+| `06_phase1_quality_fragmentation.png` | β₀/β₁ vs. quality threshold — proves β₁=0 |
+| `04_persistence_diagram.png` |  H₀/H₁ scatter diagram, semantic space |
+| `07_persistence_barcode.png` | Classic barcode view of the same |
+| `08_before_after_healing.png` |"Before/After" — missing links drawn in red |
+| `findings_summary.md` | Full write-up, paste straight into the script/slides |
 
 ## File structure
 ```
@@ -80,12 +80,4 @@ data/                    # the 3 provided JSON files
 outputs/                 # generated figures + findings_summary.md
 ```
 
-## For Reza's script
-The two concrete, judge-checkable numbers to lead with:
-1. "We mathematically proved zero recursive attack loops exist in the
-   curated graph at ANY quality threshold — not by running the numbers
-   once, but because the graph is structurally a forest."
-2. "Our topology engine found `ek_0032` and `ek_0033` are 8.5 standard
-   deviations closer in meaning than the average pair in this dataset —
-   and human curators never connected them. Here's what each one says..."
-   (pull exact titles/snippets from the JSON for the live demo).
+
