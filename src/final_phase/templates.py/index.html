@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TopoGraph Interactive Dashboard</title>
+    
+    <script src="https://cdn.plot.ly/plotly-2.24.1.min.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 15px;
+            background: #121212;
+            color: #e0e0e0;
+            font-family: Arial, sans-serif;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #488aeb;
+        }
+
+        .cards-container {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .summary-card {
+            flex: 1;
+            min-width: 200px;
+            background: #1e1e1e;
+            border: 1px solid #2d2d2d;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        .summary-card h2 {
+            margin: 0 0 5px 0;
+            font-size: 1.8rem;
+            color: #10B981;
+        }
+
+        .summary-card p {
+            margin: 0;
+            color: #9ca3af;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .card {
+            background: #1e1e1e;
+            border: 1px solid #2d2d2d;
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .network {
+            grid-column: span 2;
+        }
+
+        /* Forces injected plotly divs to take up full available width over the network tunnel */
+        .js-plotly-plot, .plotly {
+            width: 100% !important;
+        }
+
+        @media(max-width: 1024px){
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            .network {
+                grid-column: span 1;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>TopoGraph Interactive Dashboard</h1>
+
+    <div class="cards-container">
+        {% for card in cards %}
+        <div class="summary-card">
+            <h2>{{ card.value }}</h2>
+            <p>{{ card.label }}</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="dashboard">
+
+        <div class="card network">
+            {{ network|safe }}
+        </div>
+
+        <div class="card network">
+            {{ healed_network|safe }}
+        </div>
+
+        <div class="card">
+            {{ centrality|safe }}
+        </div>
+
+        <div class="card">
+            {{ category|safe }}
+        </div>
+
+        <div class="card">
+            {{ persistence|safe }}
+        </div>
+
+        <div class="card">
+            {{ barcode|safe }}
+        </div>
+
+        <div class="card">
+            {{ betti|safe }}
+        </div>
+
+        <div class="card">
+            {{ summarypie|safe }}
+        </div>
+
+    </div>
+
+    <script>
+        window.addEventListener('resize', function() {
+            const plots = document.getElementsByClassName('js-plotly-plot');
+            for (let i = 0; i < plots.length; i++) {
+                Plotly.Plots.resize(plots[i]);
+            }
+        });
+    </script>
+
+</body>
+</html>
