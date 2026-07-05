@@ -10,12 +10,14 @@ from flask import Flask, render_template_string
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-TEMPLATE_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)))
-SRC_PATH = os.path.join(BASE_DIR, "src")
 
+# Move up two levels to reach 'Topograph_pipeline'
+# (One 'dirname' for final_phase, one 'dirname' for src)
+PROJECT_ROOT = os.path.dirname(os.path.dirname(BASE_DIR))
 
-if SRC_PATH not in sys.path:
-    sys.path.insert(0, SRC_PATH)
+# Add the project root to sys.path
+if PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, PROJECT_ROOT)
 
 
 
@@ -41,9 +43,10 @@ from src.final_phase.tda_analysis import (
     compute_persistence,
     betti_curve
 )
+TEMPLATE_DIR = os.path.join(BASE_DIR, "templates")
 
 app = Flask(__name__, 
-            template_folder=TEMPLATE_FOLDER, 
+            template_folder=TEMPLATE_DIR, 
             static_folder="static")
 
 
